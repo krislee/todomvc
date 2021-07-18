@@ -60,13 +60,6 @@ var app = app || {};
 		this.inform();
 	};
 
-	app.TodoModel.prototype.search = function (query) {
-		console.log(64, query)
-		// this.todos = this.todos.filter(todo => {
-		// 	todo.filter(to)
-		// })
-	}
-
 	app.TodoModel.prototype.destroy = function (todo) {
 		this.todos = this.todos.filter(function (candidate) {
 			return candidate !== todo;
