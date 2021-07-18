@@ -23,8 +23,7 @@ var app = app || {};
 				nowShowing: app.ALL_TODOS,
 				editing: null,
 				newTodo: '',
-				// searchTodo: ''
-				searching: false
+				searchTodo: '',
 			};
 		},
 
@@ -42,11 +41,29 @@ var app = app || {};
 		handleChange: function (event) {
 			this.setState({newTodo: event.target.value});
 		},
+
 		handleSearchChange: function(event) {
 			this.setState({
 				searchTodo: event.target.value
 			})
-			console.log(40, event.target.value)
+			// console.log(49, event.target.value)
+			// console.log(50, event.which)
+			// console.log(51, event.key)
+			// if (event.which == 8) {
+			// 	this.setState({
+			// 		nowShowing: app.ALL_TODOS
+			// 	})
+			// }
+		},
+		handleSearchKeyDown: function(event) {
+			console.log(49, event.target.value)
+			console.log(50, event.which)
+			console.log(51, event.key)
+			if (event.which == 8) {
+				this.setState({
+					nowShowing: app.ALL_TODOS
+				})
+			}
 		},
 		handleNewTodoKeyDown: function (event) {
 			if (event.keyCode !== ENTER_KEY) {
@@ -97,8 +114,7 @@ var app = app || {};
 		},
 
 		handleSubmit: function () {
-			// this.setState({searching: true})
-			this.setState({nowShowing: 'searching'})
+			this.setState({nowShowing: app.SEARCH_TODOS})
 			console.log("submitting")
 		},
 
@@ -135,28 +151,6 @@ var app = app || {};
 				);
 			}, this);
 
-			// var searchedToDos = todos.filter((todo) => {
-			// 	console.log(138, todo.title)
-			// 	console.log(139, this.state.searchTodo)
-			// 	return todo.title == this.state.searchTodo
-			// })
-
-			// var queriedToDos = searchedToDos.map(function (todo) {
-			// 	return (
-			// 		<TodoItem
-			// 			key={todo.id}
-			// 			todo={todo}
-			// 			onToggle={this.toggle.bind(this, todo)}
-			// 			onDestroy={this.destroy.bind(this, todo)}
-			// 			onEdit={this.edit.bind(this, todo)}
-			// 			editing={this.state.editing === todo.id}
-			// 			onSave={this.save.bind(this, todo)}
-			// 			onCancel={this.cancel}
-			// 		/>
-			// 	);
-			// }, this);
-
-
 			var activeTodoCount = todos.reduce(function (accum, todo) {
 				return todo.completed ? accum : accum + 1;
 			}, 0);
@@ -173,25 +167,6 @@ var app = app || {};
 					/>;
 			}
 
-			// if (queriedToDos.length && this.state.searching) {
-			// 	main = (
-			// 		<section className="main">
-			// 			<input
-			// 				id="toggle-all"
-			// 				className="toggle-all"
-			// 				type="checkbox"
-			// 				onChange={this.toggleAll}
-			// 				checked={activeTodoCount === 0}
-			// 			/>
-			// 			<label
-			// 				htmlFor="toggle-all"
-			// 			/>
-			// 			<ul className="todo-list">
-			// 				{searchedToDos}
-			// 			</ul>
-			// 		</section>
-			// 	);
-			// }
 			if (todos.length) {
 				main = (
 					<section className="main">
@@ -217,6 +192,7 @@ var app = app || {};
 				<div>
 					<input className="searchbar" placeholder="search" type="text" onChange={this.handleSearchChange} 
 					value={this.state.searchTodo} 
+					onKeyDown={this.handleSearchKeyDown}
 					// onSearch={this.search}
 					/>
 					<button onClick={this.handleSubmit} style={{backgroundColor: 'orange', height: '50px', width: '75px'}}> Submit </button>
