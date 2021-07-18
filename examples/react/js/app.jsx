@@ -3,6 +3,9 @@
 /*jshint trailing:false */
 /*jshint newcap:false */
 /*global React, Router*/
+
+// import {Link, useParams, useHistory} from 'react-router-dom';
+
 var app = app || {};
 
 (function () {
@@ -12,6 +15,7 @@ var app = app || {};
 	app.ACTIVE_TODOS = 'active';
 	app.COMPLETED_TODOS = 'completed';
 	app.SEARCH_TODOS = 'searching';
+	app.PREVIOUS_SEARCH_TODOS = "previous_search"
 	var TodoFooter = app.TodoFooter;
 	var TodoItem = app.TodoItem;
 
@@ -24,6 +28,7 @@ var app = app || {};
 				editing: null,
 				newTodo: '',
 				searchTodo: '',
+				previousSearch: ''
 			};
 		},
 
@@ -33,7 +38,7 @@ var app = app || {};
 				'/': setState.bind(this, {nowShowing: app.ALL_TODOS}),
 				'/active': setState.bind(this, {nowShowing: app.ACTIVE_TODOS}),
 				'/completed': setState.bind(this, {nowShowing: app.COMPLETED_TODOS}),
-				// '/search': setState.bind(this, {nowShowing: app.SEARCH_TODOS})
+				'/search': setState.bind(this, {nowShowing: app.SEARCH_TODOS})
 			});
 			router.init('/');
 		},
@@ -46,24 +51,28 @@ var app = app || {};
 			this.setState({
 				searchTodo: event.target.value
 			})
-			// console.log(49, event.target.value)
-			// console.log(50, event.which)
-			// console.log(51, event.key)
-			// if (event.which == 8) {
-			// 	this.setState({
-			// 		nowShowing: app.ALL_TODOS
-			// 	})
-			// }
 		},
+
 		handleSearchKeyDown: function(event) {
-			console.log(49, event.target.value)
-			console.log(50, event.which)
-			console.log(51, event.key)
 			if (event.which == 8) {
 				this.setState({
-					nowShowing: app.ALL_TODOS
+					nowShowing: app.PREVIOUS_SEARCH_TODOS
 				})
 			}
+		},
+		handleSubmit: function () {
+			this.setState({nowShowing: app.SEARCH_TODOS})
+			this.setState({
+				previousSearch: this.state.searchTodo
+			})
+			console.log("submitting")
+			// const history = useHistory();
+			// history.push('/search')
+			// if (this.state.searchTodo) {
+			// 	this.setState({
+			// 		searchTodo: ""
+			// 	})
+			// }
 		},
 		handleNewTodoKeyDown: function (event) {
 			if (event.keyCode !== ENTER_KEY) {
@@ -113,11 +122,6 @@ var app = app || {};
 			this.props.model.clearCompleted();
 		},
 
-		handleSubmit: function () {
-			this.setState({nowShowing: app.SEARCH_TODOS})
-			console.log("submitting")
-		},
-
 		render: function () {
 			var footer;
 			var main;
@@ -129,8 +133,10 @@ var app = app || {};
 					return !todo.completed;
 				case app.COMPLETED_TODOS:
 					return todo.completed;
+				case app.PREVIOUS_SEARCH_TODOS:
+					return todo.title.includes(this.state.previousSearch);
 				case app.SEARCH_TODOS:
-					return todo.title == this.state.searchTodo;
+					return todo.title.includes(this.state.searchTodo);
 				default:
 					return true;
 				}
@@ -190,12 +196,19 @@ var app = app || {};
 			return (
 
 				<div>
-					<input className="searchbar" placeholder="search" type="text" onChange={this.handleSearchChange} 
+					<input className="searchbar" placeholder="search" type="text" 
+					onChange={this.handleSearchChange} 
 					value={this.state.searchTodo} 
 					onKeyDown={this.handleSearchKeyDown}
-					// onSearch={this.search}
 					/>
-					<button onClick={this.handleSubmit} style={{backgroundColor: 'orange', height: '50px', width: '75px'}}> Submit </button>
+					<li>
+						<a
+							href="#/search"
+							onClick={this.handleSubmit} 
+							style={{backgroundColor: 'orange', height: '50px', width: '75px'}}> 
+						Submit 
+						</a>
+					</li>
 					<header className="header">
 						<h1>todos</h1>
 						<input
