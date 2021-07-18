@@ -54,14 +54,23 @@ var app = app || {};
 		},
 
 		handleSearchKeyDown: function(event) {
-			if (event.which == 8) {
+			console.log(57, window.location.href)
+			if (event.which == 8 && window.location.href == 'http://localhost:8000/#/search') {
 				this.setState({
 					nowShowing: app.PREVIOUS_SEARCH_TODOS
 				})
 			}
 		},
 		handleSubmit: function () {
-			this.setState({nowShowing: app.SEARCH_TODOS})
+			// If on active or completed, empty search should just show those
+			if(this.state.searchTodo.length > 0) {
+				this.setState({nowShowing: app.SEARCH_TODOS})
+			} 
+			// else {
+			// 	if (window.location.href == "http://localhost:8000/#/active") {
+
+			// 	}
+			// }
 			this.setState({
 				previousSearch: this.state.searchTodo
 			})
@@ -201,14 +210,25 @@ var app = app || {};
 					value={this.state.searchTodo} 
 					onKeyDown={this.handleSearchKeyDown}
 					/>
-					<li>
-						<a
-							href="#/search"
-							onClick={this.handleSubmit} 
-							style={{backgroundColor: 'orange', height: '50px', width: '75px'}}> 
-						Submit 
-						</a>
-					</li>
+
+						<li>
+							{this.state.searchTodo.length > 0 ?
+							<a
+								href= "#/search"
+								onClick={this.handleSubmit} 
+								style={{backgroundColor: 'orange', height: '50px', width: '75px'}}> 
+							Submit 
+							</a> :
+							// <a
+							// href= {window.location.href}
+							// onClick={this.handleSubmit} 
+							// style={{backgroundColor: 'orange', height: '50px', width: '75px'}}> 
+							// Submit 
+							// </a>
+							<div style={{backgroundColor: 'orange', height: '50px', width: '75px'}}> Submit</div>
+							}
+						</li> 
+			
 					<header className="header">
 						<h1>todos</h1>
 						<input
